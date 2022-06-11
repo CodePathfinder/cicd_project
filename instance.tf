@@ -13,7 +13,7 @@ resource "aws_security_group" "allow-ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.MYIP, var.JenkinsSG]
+    cidr_blocks = [var.MYIP]
   }
   egress {
     from_port   = 0
@@ -70,6 +70,7 @@ resource "aws_instance" "webserver" {
     Name    = var.OS
     Project = var.PROJECT
     Environment = var.ENVIRONMENT
+    Terraform   = "true"
   }
 }
 
