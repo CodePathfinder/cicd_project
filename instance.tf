@@ -57,7 +57,7 @@ resource "aws_security_group" "allow-web" {
 # Create 'web-server' in 'public-a'
 #########################################
 
-resource "aws_instance" "webserver" {
+resource "aws_instance" "webserver-a" {
   ami                    = var.AMIS[var.OS]
   instance_type          = var.TYPE
   subnet_id              = aws_subnet.public-a.id
@@ -80,7 +80,7 @@ resource "aws_instance" "webserver" {
 # Create 'web-server' in 'public-b'
 #########################################
 
-resource "aws_instance" "webserver" {
+resource "aws_instance" "webserver-b" {
   ami                    = var.AMIS[var.OS]
   instance_type          = var.TYPE
   subnet_id              = aws_subnet.public-b.id
