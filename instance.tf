@@ -6,14 +6,14 @@
 resource "aws_security_group" "allow-ssh" {
   vpc_id      = aws_vpc.main.id
   name        = "allow_ssh_sg"
-  description = "Allow ssh inbound traffic from MYIP"
+  description = "Allow ssh inbound traffic from ${var.IP_ADDRESSES[var.SSH_CIDR]}"
 
   ingress {
-    description = "SSH from MYIP"
+    description = "SSH from ${var.IP_ADDRESSES[var.SSH_CIDR]}"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.MYIP]
+    cidr_blocks = [var.IP_ADDRESSES[var.SSH_CIDR]]
   }
   egress {
     from_port   = 0
@@ -72,16 +72,4 @@ resource "aws_instance" "webserver" {
     Environment = var.ENVIRONMENT
     Terraform   = "true"
   }
-}
-
-#########################################
-# Output IP addresses
-#########################################
-
-output "PublicIP" {
-  value = aws_instance.webserver.public_ip
-}
-
-output "PrivateIP" {
-  value = aws_instance.webserver.private_ip
 }
