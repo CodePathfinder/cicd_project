@@ -110,7 +110,7 @@ resource "aws_instance" "webserver" {
   }
   connection {
     user        = var.USER
-    private_key = file(/var/lib/jenkins/.ssh/id_rsa)
+    private_key = file(var.PRIV_KEY)
     host        = self.public_ip
   }
 }
