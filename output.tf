@@ -2,18 +2,18 @@
 # Output IP addresses
 #########################################
 
-output "PublicIP" {
+output "PublicIP-a" {
   value = aws_instance.webserver-a.public_ip
 }
 
-output "PrivateIP" {
+output "PrivateIP-a" {
   value = aws_instance.webserver-a.private_ip
 }
 
-output "PublicIP" {
+output "PublicIP-b" {
   value = aws_instance.webserver-b.public_ip
 }
 
-output "PrivateIP" {
+output "PrivateIP-b" {
   value = aws_instance.webserver-b.private_ip
 }
