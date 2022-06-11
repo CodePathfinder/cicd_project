@@ -40,7 +40,7 @@ resource "aws_security_group" "allow-web" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
     from_port   = 0
@@ -71,5 +71,46 @@ resource "aws_instance" "webserver" {
     Project = var.PROJECT
     Environment = var.ENVIRONMENT
     Terraform   = "true"
+  }
+}
+
+# ============ Tested code ==============
+
+#########################################
+# Create 'web-server' in 'public-b'
+#########################################
+
+resource "aws_instance" "webserver" {
+  ami                    = var.AMIS[var.OS]
+  instance_type          = var.TYPE
+  subnet_id              = aws_subnet.public-b.id
+  key_name               = var.PRIV_KEY
+  vpc_security_group_ids = [
+    aws_security_group.allow-web.id, 
+    aws_security_group.allow-ssh.id
+  ]   
+  tags = {
+    Name    = var.OS
+    Project = var.PROJECT
+    Environment = "Stage"
+    Terraform   = "true"
+  }
+# deploy script to remote webserver
+  provisioner "file" {
+    source      = "web.sh"
+    destination = "/tmp/web.sh"
+  }
+# run script on remote webserver
+  provisioner "remote-exec" {
+    inline = [
+      "chmod u+x /tmp/web.sh",
+      "sed -i -e 's/\r$//' /tmp/web.sh",
+      "sudo /tmp/web.sh"
+    ]
+  }
+  connection {
+    user        = var.USER
+    private_key = file(/var/lib/jenkins/.ssh/id_rsa)
+    host        = self.public_ip
   }
 }

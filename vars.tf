@@ -34,6 +34,10 @@ variable "TYPE" {
   default = "t2.micro"
 }
 
+variable "USER" {
+  default = "ubuntu"
+}
+
 variable "PUB_KEY" {
   default = "jenkins-key-frankfurt.pub"
 }
