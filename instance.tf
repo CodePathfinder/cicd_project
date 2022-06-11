@@ -78,9 +78,9 @@ resource "aws_instance" "webserver" {
 #########################################
 
 output "PublicIP" {
-  value = aws_instance.war-inst.public_ip
+  value = aws_instance.webserver.public_ip
 }
 
 output "PrivateIP" {
-  value = aws_instance.war-inst.private_ip
+  value = aws_instance.webserver.private_ip
 }
