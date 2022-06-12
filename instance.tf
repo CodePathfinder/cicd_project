@@ -76,13 +76,15 @@ resource "aws_instance" "webserver-a" {
     source      = "web.sh"
     destination = "/tmp/web.sh"
   }
-
   provisioner "remote-exec" {
     inline = [
       "chmod u+x /tmp/web.sh",
       "sed -i -e 's/\r$//' /tmp/web.sh",
       "sudo /tmp/web.sh"
     ]
+  }
+  provisioner "local-exec" {
+    command = "echo aws_instance.webserver-a.private >> private_ips.txt"
   }
   connection {
     user        = var.USER
@@ -112,18 +114,19 @@ resource "aws_instance" "webserver-b" {
     Environment = "Stage"
     Terraform   = "true"
   }
-
   provisioner "file" {
     source      = "web.sh"
     destination = "/tmp/web.sh"
   }
-
   provisioner "remote-exec" {
     inline = [
       "chmod u+x /tmp/web.sh",
       "sed -i -e 's/\r$//' /tmp/web.sh",
       "sudo /tmp/web.sh"
     ]
+  }
+  provisioner "local-exec" {
+    command = "echo aws_instance.webserver-b.private_ip >> private_ips.txt"
   }
   connection {
     user        = var.USER
