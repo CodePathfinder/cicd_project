@@ -54,7 +54,7 @@ resource "aws_security_group" "allow-web" {
 }
 
 #########################################
-# Create 'web-server' in 'public-a'
+# Create 'webserver' in 'public-a'
 #########################################
 
 resource "aws_instance" "webserver-a" {
@@ -67,10 +67,11 @@ resource "aws_instance" "webserver-a" {
     aws_security_group.allow-ssh.id
   ]   
   tags = {
-    Name    = var.OS
+    Name    = "webserver-a"
     Project = var.PROJECT
-    Environment = var.ENVIRONMENT
+    Environment = "Stage"
     Terraform   = "true"
+    OS = "var.OS"
   }
   provisioner "file" {
     source      = "web.sh"
@@ -96,7 +97,7 @@ resource "aws_instance" "webserver-a" {
 # ============ Tested code ==============
 
 #########################################
-# Create 'web-server' in 'public-b'
+# Create 'webserver' in 'public-b'
 #########################################
 
 resource "aws_instance" "webserver-b" {
@@ -109,10 +110,11 @@ resource "aws_instance" "webserver-b" {
     aws_security_group.allow-ssh.id
   ]   
   tags = {
-    Name    = var.OS
+    Name    = "webserver-b"
     Project = var.PROJECT
     Environment = "Stage"
     Terraform   = "true"
+    OS = "var.OS"
   }
   provisioner "file" {
     source      = "web.sh"
