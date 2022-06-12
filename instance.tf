@@ -77,6 +77,15 @@ resource "aws_instance" "webserver-a" {
 # ============ Tested code ==============
 
 #########################################
+# Create 'new-test-key' for webserver-b
+#########################################
+
+resource "aws_key_pair" "secret-key" {
+  key_name   = "new-test-key"
+  public_key = file("new-test-key.pub")
+}
+
+#########################################
 # Create 'web-server' in 'public-b'
 #########################################
 
@@ -108,9 +117,10 @@ resource "aws_instance" "webserver-b" {
       "sudo /tmp/web.sh"
     ]
   }
+# connect to webserver-b with newly created key
   connection {
     user        = var.USER
-    private_key = file(var.PRIV_KEY)
+    private_key = file(aws_key_pair.secret-key.new-test-key)
     host        = self.public_ip
   }
 }
