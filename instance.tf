@@ -77,15 +77,6 @@ resource "aws_instance" "webserver-a" {
 # ============ Tested code ==============
 
 #########################################
-# Create 'new-test-key' for webserver-b
-#########################################
-
-resource "aws_key_pair" "secret-key" {
-  key_name   = "new-test-key"
-  public_key = file("new-test-key.pub")
-}
-
-#########################################
 # Create 'web-server' in 'public-b'
 #########################################
 
@@ -103,5 +94,23 @@ resource "aws_instance" "webserver-b" {
     Project = var.PROJECT
     Environment = "Stage"
     Terraform   = "true"
+  }
+
+  provisioner "file" {
+    source      = "web.sh"
+    destination = "/tmp/web.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod u+x /tmp/web.sh",
+      "sed -i -e 's/\r$//' /tmp/web.sh",
+      "sudo /tmp/web.sh"
+    ]
+  }
+  connection {
+    user        = var.USER
+    private_key = file("/var/lib/jenkins/.ssh/${var.PRIV_KEY}")
+    host        = self.public_ip
   }
 }
