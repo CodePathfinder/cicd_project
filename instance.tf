@@ -104,23 +104,4 @@ resource "aws_instance" "webserver-b" {
     Environment = "Stage"
     Terraform   = "true"
   }
-# deploy script to remote webserver
-  provisioner "file" {
-    source      = "web.sh"
-    destination = "/tmp/web.sh"
-  }
-# run script on remote webserver
-  provisioner "remote-exec" {
-    inline = [
-      "chmod u+x /tmp/web.sh",
-      "sed -i -e 's/\r$//' /tmp/web.sh",
-      "sudo /tmp/web.sh"
-    ]
-  }
-# connect to webserver-b with newly created key
-  connection {
-    user        = var.USER
-    private_key = file(aws_key_pair.secret-key.new-test-key)
-    host        = self.public_ip
-  }
 }
