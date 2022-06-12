@@ -85,7 +85,7 @@ resource "aws_instance" "webserver-a" {
     ]
   }
   provisioner "local-exec" {
-    command = "echo ${tags[Name]} ${self.private-ip} >> private_ips.txt"
+    command = "echo ${self.tags.Name} ${self.private-ip} >> private_ips.txt"
   }
   connection {
     user        = var.USER
