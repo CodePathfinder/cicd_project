@@ -1,6 +1,12 @@
 ---
-- hosts: webservers
+- name: Install Apache and Upload Webpage
+  hosts: webservers
   become: True
+
+  vars:
+    source_dir: ./my_website
+    destination_dir: /var/www/html/
+
   tasks:
     - name: Install apache2
       apt:
@@ -15,8 +21,11 @@
 
     - name: Copy Website files
       copy:
-        src: index.html
-        dest: /var/www/html/
+        src: {{ item }} 
+        dest: {{ destination_dir }}
+        mode: 0555
+      with_fileglob: {{ source_dir }}/*.*
+
 
     - name: Restart apache2
       service:
