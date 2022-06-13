@@ -4,7 +4,7 @@
   become: True
 
   vars:
-    source_dir: ../my_website
+    source_dir: ../my_website/
     destination_dir: /var/www/html/
 
   tasks:
@@ -21,10 +21,9 @@
 
     - name: Copy Website files to remote webserver
       copy:
-        src: "{{ item }}"
+        src: "{{ source_dir }}"
         dest: "{{ destination_dir }}"
         mode: 0644
-      with_fileglob: "{{ source_dir }}/*"
 
     - name: Restart apache2
       service:
