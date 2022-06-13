@@ -24,7 +24,7 @@
         src: "{{ item }}"
         dest: "{{ destination_dir }}"
         mode: 0644
-      with_fileglob: "{{ source_dir }}/*.*"
+      with_fileglob: "{{ source_dir }}/*"
 
     - name: Restart apache2
       service:
