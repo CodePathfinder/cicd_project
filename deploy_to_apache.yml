@@ -4,7 +4,7 @@
   become: True
 
   vars:
-    source_dir: ./my_website
+    source_dir: ./my_website/my_website
     destination_dir: /var/www/html/
 
   tasks:
