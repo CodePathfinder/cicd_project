@@ -21,8 +21,8 @@
 
     - name: Copy Website files to remote webserver
       copy:
-        src: { { item } }
-        dest: { { destination_dir } }
+        src: {{ item }}
+        dest: {{ destination_dir }}
         mode: 0555
       with_fileglob: "{{ source_dir }}/*.*"
 
