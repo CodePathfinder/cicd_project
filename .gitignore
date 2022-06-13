@@ -1,6 +1,2 @@
-drafts-tf
-html
 ansible
-pipelines
-.gitignore
-.git
+ansible.cfg
