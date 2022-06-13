@@ -21,11 +21,10 @@
 
     - name: Copy Website files
       copy:
-        src: {{ item }} 
-        dest: {{ destination_dir }}
+        src: { { item } }
+        dest: { { destination_dir } }
         mode: 0555
-      with_fileglob: {{ source_dir }}/*.*
-
+      with_fileglob: "{{ source_dir }}/*.*"
 
     - name: Restart apache2
       service:
