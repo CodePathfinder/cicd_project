@@ -23,7 +23,7 @@
       copy:
         src: "{{ item }}"
         dest: "{{ destination_dir }}"
-        mode: 0555
+        mode: 0644
       with_fileglob: "{{ source_dir }}/*.*"
 
     - name: Restart apache2
