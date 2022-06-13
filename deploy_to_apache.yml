@@ -19,7 +19,7 @@
         state: started
         enabled: True
 
-    - name: Copy Website files
+    - name: Copy Website files to remote webserver
       copy:
         src: { { item } }
         dest: { { destination_dir } }
