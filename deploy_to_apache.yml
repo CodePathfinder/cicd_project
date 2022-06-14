@@ -22,16 +22,10 @@
     # Synchronize and delete files in dest on the remote host that are not found in src of localhost
     - name: Synchronize remote with source
       synchronize:
-        src: some/relative/path
-        dest: /some/absolute/path
-        delete: yes
-        recursive: yes
-
-    - name: Copy Website files to remote webserver
-      copy:
         src: "{{ source_dir }}"
         dest: "{{ destination_dir }}"
-        mode: 0644
+        delete: yes
+        recursive: yes
 
     - name: Restart apache2
       service:
