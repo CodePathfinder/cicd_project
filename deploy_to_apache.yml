@@ -19,6 +19,11 @@
         state: started
         enabled: True
 
+    - name: Remove all from /var/www/html/ directory
+      shell: |
+        rm -r /var/www/html
+        mkdir -p /var/www/html
+
     - name: Copy Website files to remote webserver
       copy:
         src: "{{ source_dir }}"
