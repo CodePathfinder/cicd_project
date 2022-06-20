@@ -23,8 +23,12 @@ variable "ZONE2" {
 }
 
 #########################################
-# INSTANCE: OS | TYPE | KEY-PAIR 
+# INSTANCE: COUNT | OS | TYPE | KEY-PAIR 
 #########################################
+
+variable "COUNT" {
+  default = var.ENVIRONMENT == "Dev" ? 2 : 3
+}
 
 variable "OS" {
   default = "ubuntu-20"
@@ -77,7 +81,3 @@ variable "IP_ADDRESSES" {
 #########################################
 # EXISTING RESOURCES 
 #########################################
-
-variable "JenkinsSG" {
-  default = "sg-0d399328d2318b1da"
-}

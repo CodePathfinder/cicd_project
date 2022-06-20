@@ -1,7 +1,6 @@
-
-#########################################
-# Create Virtual Private Cloud (VPC)
-#########################################
+##########################################
+# == Create Virtual Private Cloud (VPC) ==
+##########################################
 
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
@@ -10,48 +9,42 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = "true"
   tags = {
     Name = "main-vpc"
+    Project = var.PROJECT
+    Environment = var.ENVIRONMENT
   }
 }
 
+#########################################
+# ======== CREATE PUBLIC SUBNET =========
+#########################################
+
+resource "aws_subnet" "public-a" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.10.0/24"
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "public-subnet-a"
+    Project = var.PROJECT
+    Environment = var.ENVIRONMENT
+  }
+}
 
 #########################################
-#  ========== PUBLIC PART ==========
+# == Add internet gateway (IGW) to VPC ==
 #########################################
-
-# Add internet gateway
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
   tags = {
     Name = "main-igw"
+    Project = var.PROJECT
+    Environment = var.ENVIRONMENT
   }
 }
 
-# Add public subnet A
-
-resource "aws_subnet" "public-a" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.10.0/24"
-  availability_zone       = var.ZONE1
-  map_public_ip_on_launch = true
-  tags = {
-    Name = "public-subnet-a"
-  }
-}
-
-# Add public subnet B
-
-resource "aws_subnet" "public-b" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.11.0/24"
-  availability_zone       = var.ZONE2
-  map_public_ip_on_launch = true
-  tags = {
-    Name = "public-subnet-b"
-  }
-}
-
-# Add public routing to IGW for public subnets
+#########################################
+#  Add routing to IGW for public subnet
+#########################################
 
 resource "aws_route_table" "public-rt" {
   vpc_id = aws_vpc.main.id
@@ -61,17 +54,38 @@ resource "aws_route_table" "public-rt" {
   }
   tags = {
     Name = "public-rt"
+    Project = var.PROJECT
+    Environment = var.ENVIRONMENT
   }
 }
 
-# Add associations of public subnets with public routing
+#########################################
+#  Associate public subnet with public-rt
+#########################################
 
-resource "aws_route_table_association" "a" {
+resource "aws_route_table_association" "public_rt_association_a" {
   subnet_id      = aws_subnet.public-a.id
   route_table_id = aws_route_table.public-rt.id
 }
 
-resource "aws_route_table_association" "b" {
-  subnet_id      = aws_subnet.public-b.id
-  route_table_id = aws_route_table.public-rt.id
+#########################################
+#  Elastic Load Balancer (Internet-Faced)
+#########################################
+
+resource "aws_elb" "web" {
+  name = "web-elb"
+  subnets = [aws_subnet.public-a.id]
+  security_groups = [aws_security_group.allow-web.id]
+  listener {
+    instance_port = 80
+    instance_protocol = "http"
+    lb_port = 80
+    lb_protocol = "http"
+  }
+  instances = aws_instance.webserver[*].id
+  tags = {
+    Name = "web-elb"
+    Project = var.PROJECT
+    Environment = var.ENVIRONMENT
+  }
 }
