@@ -28,7 +28,7 @@ resource "aws_instance" "webserver" {
 
 locals {
   group_name = aws_instance.webserver[0].tags.Group
-  group_ips = join("\n", aws_instance.webserver[*].privat_ip)
+  group_ips = join("\n", aws_instance.webserver[*].private_ip)
   group_data = "[${local.group_name}]\n${local.group_ips}"
 }
 
