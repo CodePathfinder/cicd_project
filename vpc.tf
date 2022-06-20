@@ -25,13 +25,13 @@ resource "aws_vpc_peering_connection" "default_main_peering" {
   
   accepter {
     allow_remote_vpc_dns_resolution = true
-    allow_classic_link_to_remote_vpc = true
+    # allow_classic_link_to_remote_vpc = true
     allow_vpc_to_remote_classic_link = true
   }
 
   requester {
     allow_remote_vpc_dns_resolution = true
-    allow_classic_link_to_remote_vpc = true
+    # allow_classic_link_to_remote_vpc = true
     allow_vpc_to_remote_classic_link = true
   }
 }
