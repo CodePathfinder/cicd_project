@@ -22,6 +22,18 @@ resource "aws_vpc_peering_connection" "default_main_peering" {
   vpc_id      = aws_vpc.main.id
   peer_vpc_id = "vpc-0dd796b7b6beec76f"
   auto_accept = true
+  
+  accepter {
+    allow_remote_vpc_dns_resolution = true
+    allow_classic_link_to_remote_vpc = true
+    allow_vpc_to_remote_classic_link = true
+  }
+
+  requester {
+    allow_remote_vpc_dns_resolution = true
+    allow_classic_link_to_remote_vpc = true
+    allow_vpc_to_remote_classic_link = true
+  }
 }
 
 resource "aws_route" "default_vpc_rt" {
