@@ -17,9 +17,10 @@ resource "aws_vpc" "main" {
 ##########################################
 # === Associate main-vpc with jenkins ===
 ##########################################
-resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "172.31.0.192/26"
+resource "aws_vpc_peering_connection" "default-main-vpcs" {
+  vpc_id      = aws_vpc.main.id
+  peer_vpc_id = "vpc-0dd796b7b6beec76f"
+  auto_accept = true
 }
 
 #########################################
