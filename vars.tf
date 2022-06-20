@@ -27,7 +27,7 @@ variable "ZONE2" {
 #########################################
 
 variable "COUNT" {
-  default = var.ENVIRONMENT == "Dev" ? 2 : 3
+  default = 2
 }
 
 variable "OS" {
