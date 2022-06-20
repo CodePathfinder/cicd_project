@@ -6,5 +6,5 @@
       aws_s3:
         bucket: terraform-state-cicd
         object: /dev_hosts/hosts.txt
-        dest: ./ansible/hosts.txt
+        dest: ./ansible/
         mode: get
