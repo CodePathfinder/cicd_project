@@ -12,7 +12,7 @@ resource "aws_instance" "webserver" {
     aws_security_group.allow-web.id, 
     aws_security_group.allow-ssh.id
   ]
-  user_data = file(web.sh)
+  user_data = file("web.sh")
   tags = {
     Name    = "web-${format("%02d", count.index + 1)}"
     Group   = "webservers"
