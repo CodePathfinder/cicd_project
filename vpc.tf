@@ -25,14 +25,10 @@ resource "aws_vpc_peering_connection" "default_main_peering" {
   
   accepter {
     allow_remote_vpc_dns_resolution = true
-    # allow_classic_link_to_remote_vpc = true
-    # allow_vpc_to_remote_classic_link = true
   }
 
   requester {
     allow_remote_vpc_dns_resolution = true
-    # allow_classic_link_to_remote_vpc = true
-    # allow_vpc_to_remote_classic_link = true
   }
 }
 
@@ -88,6 +84,11 @@ resource "aws_route_table" "public-rt" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
+  route {
+    cidr_block = "172.31.0.0/24"
+    vpc_peering_connection_id = aws_vpc_peering_connection.default_main_peering.id
+  }
+  
   tags = {
     Name = "public-rt"
     Project = var.PROJECT
