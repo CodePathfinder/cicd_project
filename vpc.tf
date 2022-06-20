@@ -32,7 +32,7 @@ resource "aws_route" "default_vpc_rt" {
 }
 
 resource "aws_route" "main_vpc_rt" {
-  route_table_id            = "rtb-098e83b5050bca1e6"
+  route_table_id            = aws_vpc.main.main_route_table_id
   destination_cidr_block    = "172.31.0.0/24"
   vpc_peering_connection_id = aws_vpc_peering_connection.default_main_peering.id
   depends_on                = [aws_vpc_peering_connection.default_main_peering]
