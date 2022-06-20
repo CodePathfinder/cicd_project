@@ -1,7 +1,10 @@
 ---
-- name: Get inventory file from S3 bucket
-  aws_s3:
-    bucket: terraform-state-cicd
-    object: /dev_hosts/hosts.txt
-    dest: ./ansible/hosts.txt
-    mode: get
+- name: Get inventory file
+  hosts: localhost
+  tasks:
+    - name: Get inventory file from S3 bucket
+      aws_s3:
+        bucket: terraform-state-cicd
+        object: /dev_hosts/hosts.txt
+        dest: ./ansible/hosts.txt
+        mode: get
