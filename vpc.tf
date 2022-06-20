@@ -14,6 +14,14 @@ resource "aws_vpc" "main" {
   }
 }
 
+##########################################
+# === Associate main-vpc with jenkins ===
+##########################################
+resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "172.31.0.225/32"
+}
+
 #########################################
 # ======== CREATE PUBLIC SUBNET =========
 #########################################
