@@ -30,8 +30,8 @@ resource "aws_vpc_peering_connection" "default_main_peering" {
 
   requester {
     allow_remote_vpc_dns_resolution = true
-  }
-} */
+  } */
+} 
   
 resource "aws_route" "default_vpc_rt" {
   route_table_id            = "rtb-093ac07e6f8726c61"
