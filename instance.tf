@@ -13,7 +13,7 @@ resource "aws_instance" "webserver" {
     aws_security_group.allow-ssh.id
   ]
 // user_data = file("web.sh")
-  user_data_replace_on_change = true
+//  user_data_replace_on_change = true
   tags = {
     Name    = "web-${format("%02d", count.index + 1)}"
     Group   = "webservers"
@@ -29,7 +29,7 @@ resource "aws_instance" "webserver" {
 
 locals {
   group_name = aws_instance.webserver[0].tags.Group
-  group_ips = join("\n", aws_instance.webserver[*].private_ip)
+  group_ips = join("\n", [for a in aws_instance.webserver[*].private_i : "${a} ansible_user=${var.USER}"])
   group_data = "[${local.group_name}]\n${local.group_ips}"
 }
 
