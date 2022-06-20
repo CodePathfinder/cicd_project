@@ -75,7 +75,7 @@ resource "aws_route_table_association" "public_rt_association_a" {
 resource "aws_elb" "web" {
   name = "web-elb"
   subnets = [aws_subnet.public-a.id]
-  security_groups = [aws_security_group.allow-web.id]
+  security_groups = [aws_security_group.allow-web.id, aws_security_group.allow-ssh.id]
   listener {
     instance_port = 80
     instance_protocol = "http"
