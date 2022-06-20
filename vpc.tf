@@ -15,7 +15,7 @@ resource "aws_vpc" "main" {
 }
 
 ##########################################
-# === Associate main-vpc with jenkins ===
+# = VPC peering connection: default-main =
 ##########################################
 resource "aws_vpc_peering_connection" "default-main-vpcs" {
   vpc_id      = aws_vpc.main.id
