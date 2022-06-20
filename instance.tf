@@ -13,7 +13,7 @@ resource "aws_instance" "webserver" {
     aws_security_group.allow-ssh.id
   ]
 // user_data = file("web.sh")
-// user_data_replace_on_change = true
+  user_data_replace_on_change = true
   tags = {
     Name    = "web-${format("%02d", count.index + 1)}"
     Group   = "webservers"
