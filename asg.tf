@@ -57,14 +57,12 @@ resource "aws_security_group" "web" {
   name        = "Web SG"
   description = "Web Dynamic SG: open ports 80, 443"
 
-  dynamic "ingress" {
-    for_each = ["80", "443"]
-    content = {
-      from_port   = ingress.value
-      to_port     = ingress.value
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
+  ingress {
+    for_each    = toset(["80", "443"])
+    from_port   = each.key
+    to_port     = each.key
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
     from_port   = 0
@@ -113,16 +111,14 @@ resource "aws_autoscaling_group" "web" {
     create_before_destroy = true
   }
 
-  dynamic "tag" {
+  tags = {
     for_each = {
       Name    = "WebServer-in-ASG"
       Project = "var.project"
     }
-    content {
-      key                 = tag.key
-      value               = tag.value
-      propagate_at_launch = true
-    }
+    key                 = each.key
+    value               = each.value
+    propagate_at_launch = true
   }
 }
 
