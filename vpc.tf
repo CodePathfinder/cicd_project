@@ -24,7 +24,7 @@
 #==============================================
 
 ###############################################
-# =================== DATA ====================
+# ============== COLLECT DATA =================
 ###############################################
 
 data "aws_availability_zones" "available" {}
@@ -74,7 +74,7 @@ resource "aws_subnet" "public_subnets" {
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
   tags = {
-    Name = "${var.env}-public-${count.index +1}"
+    Name = "${var.env}-public-${format("%02d", count.index + 1)}"
     Project = var.project
   }
 }
@@ -114,7 +114,7 @@ resource "aws_eip" "nat" {
   count = length(var.private_subnet_cidrs)
   vpc = true
   tags = {
-    Name = "${var.env}-nat-gw-eip-${count.index + 1}"
+    Name = "${var.env}-nat-gw-eip-${format("%02d", count.index + 1)}"
     Project = var.project
   }
 }
@@ -128,7 +128,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id         = element(aws_subnet.public_subnets[*].id, count.index)
 
   tags = {
-    Name = "${var.env}-nat-gw-${count.index + 1}"
+    Name = "${var.env}-nat-gw-${format("%02d", count.index + 1)}"
     Project = var.project
   }
 }
@@ -143,7 +143,7 @@ resource "aws_route_table" "private_subnets" {
     nat_gateway_id = aws_nat_gateway.nat[count.index].id
   }
   tags = {
-    Name = "${var.env}-routing-private-subnet-${count.index + 1}"
+    Name = "${var.env}-routing-private-subnet-${format("%02d", count.index + 1)}""
     Project = var.project
   }
 }
@@ -157,7 +157,7 @@ resource "aws_subnet" "private_subnets" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name = "${var.env}-private-${count.index + 1}"
+    Name = "${var.env}-private-${format("%02d", count.index + 1)}""
     Project = var.project
   }
 }
@@ -222,7 +222,7 @@ resource "aws_elb" "web" {
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
-    timeout             = 32
+    timeout             = 3
     target              = "HTTP:8000/"
     interval            = 30
   }
@@ -234,19 +234,9 @@ resource "aws_elb" "web" {
     Project = var.project
   }
 }
-*/
 
 ###############################################
 # ============= AUTOSCALING GROUP =============
 ###############################################
 
-
-# ======= Create Instance Image for ASG =======
-
-
-
-# ======== Create Launge Configuration ========
-
-
-
-# ========= Create Autoscaling Group ==========
+*/
