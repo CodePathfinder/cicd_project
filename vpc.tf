@@ -171,36 +171,6 @@ resource "aws_route_table_association" "private_routes" {
 }
 
 ###############################################
-# == Elastic Load Balancer (Internet-Faced) ==
-###############################################
-
-resource "aws_elb" "web" {
-  name = "web-elb"
-  subnets = [aws_subnet.public_subnets[*].id]
-  security_groups = [aws_security_group.web.id]
-  listener {
-    lb_port = 80
-    lb_protocol = "http"
-    instance_port = 80
-    instance_protocol = "http"
-  }
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 32
-    target              = "HTTP:8000/"
-    interval            = 30
-  }
-  instances = aws_instance.webserver[*].id
-  cross_zone_load_balancing   = true
-
-  tags = {
-    Name = "${var.env}-web-elb"
-    Project = var.project
-  }
-}
-
-###############################################
 # = VPC peering connection: default <-> main ==
 ###############################################
 
@@ -234,6 +204,38 @@ resource "aws_route" "slave_route" {
     Project = var.project
   }
 }
+
+/*
+###############################################
+# == Elastic Load Balancer (Internet-Faced) ==
+###############################################
+
+resource "aws_elb" "web" {
+  name = "web-elb"
+  subnets = [aws_subnet.public_subnets[*].id]
+  security_groups = [aws_security_group.web.id]
+  listener {
+    lb_port = 80
+    lb_protocol = "http"
+    instance_port = 80
+    instance_protocol = "http"
+  }
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 32
+    target              = "HTTP:8000/"
+    interval            = 30
+  }
+  instances = aws_instance.webserver[*].id
+  cross_zone_load_balancing   = true
+
+  tags = {
+    Name = "${var.env}-web-elb"
+    Project = var.project
+  }
+}
+*/
 
 ###############################################
 # ============= AUTOSCALING GROUP =============
