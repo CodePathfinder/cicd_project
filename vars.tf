@@ -16,15 +16,15 @@ variable "env" {
 
 variable "public_subnet_cidrs" {
   default = [
-    "10.0.10.0",
-    "10.0.11.0"
+    "10.0.10.0/24",
+    "10.0.11.0/24"
   ]
 }
 
 variable "private_subnet_cidrs" {
   default = [
-    "10.0.20.0",
-    "10.0.21.0"
+    "10.0.20.0/24",
+    "10.0.21.0/24"
   ]
 }
 
