@@ -189,7 +189,7 @@ resource "aws_vpc_peering_connection" "master_peering" {
 # == Add route -> slaves in default VPC route table ==
 
 resource "aws_route" "jenkins_route" {
-  route_table_id            = data.aws_route_table.default # default RT
+  route_table_id            = data.aws_route_table.default.id # default RT
   destination_cidr_block    = var.vpc_cidr
   vpc_peering_connection_id = aws_vpc_peering_connection.master_peering.id
   depends_on                = [aws_vpc_peering_connection.master_peering]
