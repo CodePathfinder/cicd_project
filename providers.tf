@@ -3,5 +3,5 @@
 #########################################
 
 provider "aws" {
-  region = var.REGION
+  region = eu-central-1
 }

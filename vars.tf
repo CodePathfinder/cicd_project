@@ -1,27 +1,35 @@
 #########################################
-# REGION | PROJECT | ENVIRONMENT | ZONES
+# MODULED TERRAFORMR | VARIABLES (INPUT)
 #########################################
 
-variable "PROJECT" {
+variable "project" {
   default = "CICD"
 }
 
-variable "ENVIRONMENT" {
-  default = "Dev"
+variable "vpc_cidr" {
+  default = "10.0.0.0/16"
 }
 
-variable "REGION" {
-  default = "eu-central-1"
+variable "env" {
+  default = "dev"
 }
 
-variable "ZONE1" {
-  default = "eu-central-1a"
+variable "public_subnet_cidrs" {
+  default = [
+    "10.0.10.0",
+    "10.0.11.0"
+  ]
 }
 
-variable "ZONE2" {
-  default = "eu-central-1b"
+variable "private_subnet_cidrs" {
+  default = [
+    "10.0.20.0",
+    "10.0.21.0"
+  ]
 }
 
+# =====================================================
+/*
 #########################################
 # INSTANCE: COUNT | OS | TYPE | KEY-PAIR 
 #########################################
@@ -81,3 +89,4 @@ variable "IP_ADDRESSES" {
 #########################################
 # EXISTING RESOURCES 
 #########################################
+*/

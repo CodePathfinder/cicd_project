@@ -1,114 +1,252 @@
-##########################################
-# == Create Virtual Private Cloud (VPC) ==
-##########################################
+#==============================================
+# Data: 
+#   - Availability Zones
+#   - Default VPC
+#   - Default Routing Table
+# Provision:
+#   - VPC
+#   - Internet Gateway
+#   - Public Subnets
+#   - Private Subnets
+#     - NAT Gateways
+#   - Elastic Load Balancer
+#   - VPC peering connection
+#   - Autoscaling Group
+# Outputs:
+#   - main_vpc_id
+#   - public_subnets_ids
+#   - public_subnets_public_ips
+#   - public_subnets_private_ips
+#   - private_subnets_ids
+#   - private_subnets_public_ips
+#   - private_subnets_private_ips
+#   - elastic_load_balancer_dns_name
+#==============================================
+
+###############################################
+# =================== DATA ====================
+###############################################
+
+data "aws_availability_zones" "available" {}
+
+data "aws_vpc" "default" {
+  default = true
+}
+data "aws_route_table" "default" {
+  tags = {
+    Name = "default"
+  }
+}
+
+###############################################
+# ======== Virtual Private Cloud (VPC) ========
+###############################################
 
 resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.vpc_cidr
   instance_tenancy     = "default"
   enable_dns_support   = "true"
   enable_dns_hostnames = "true"
   tags = {
-    Name = "main-vpc"
-    Project = var.PROJECT
-    Environment = var.ENVIRONMENT
+    Name = "${var.env}-vpc"
+    Project = var.project
   }
 }
 
-##########################################
-# = VPC peering connection: default-main =
-##########################################
+# ========== Internet Gateway (IGW) ==========
+
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
+  tags = {
+    Name = "${var.env}-igw"
+    Project = var.project
+  }
+}
+
+###############################################
+# =============== PUBLIC SUBNETS ==============
+###############################################
+
+resource "aws_subnet" "public_subnets" {
+  count                   = length(var.public_subnet_cidrs)
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = element(var.public_subnet_cidrs, count.index)
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "${var.env}-public-${count.index +1}"
+    Project = var.project
+  }
+}
+
+# ====== Route table for public subnets ======
+
+resource "aws_route_table" "public_subnets" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
+  }
+  
+  tags = {
+    Name = "${var.env}-routing-public-subnets"
+    Project = var.project
+  }
+}
+
+# = Associate route table with public subnets =
+
+resource "aws_route_table_association" "public_rt_association_a" {
+  count          = length(aws_subnet.public_subnets[*].id)
+  route_table_id = aws_route_table.public_subnets.id
+  subnet_id      = element(aws_subnet.public_subnets[*].id, count.index)
+}
+
+
+
+###############################################
+# ============== PRIVATE SUBNETS ==============
+###############################################
+
+# =========== Allocate elastic IPs ============
+
+resource "aws_eip" "nat" {
+  count = length(var.private_subnet_cidrs)
+  vpc = true
+  tags = {
+    Name = "${var.env}-nat-gw-eip-${count.index + 1}"
+    Project = var.project
+  }
+}
+
+# ============= Add NAT gateways =============
+
+resource "aws_nat_gateway" "nat" {
+  count = length(var.private_subnet_cidrs)
+  connectivity_type = "public"
+  allocation_id     = aws_eip.nat[count_index].id
+  subnet_id         = element(aws_subnet.public_subnets[*].id, count.index)
+
+  tags = {
+    Name = "${var.env}-nat-gw-${count.index + 1}"
+    Project = var.project
+  }
+}
+
+# == Add routing tables for private subnets ==
+
+resource "aws_route_table" "private-subnets" {
+  count = length(var.private_subnet_cidrs)
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat[count.index].id
+  }
+  tags = {
+    Name = "${var.env}-routing-private-subnet-${count.index + 1}"
+    Project = var.project
+  }
+}
+
+# =========== Create private subnets ==========
+
+resource "aws_subnet" "private-subnets" {
+  count = length(var.private_subnet_cidrs)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = element(var.private_subnet_cidrs, count.index)
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+
+  tags = {
+    Name = "${var.env}-private-${count.index + 1}"
+    Project = var.project
+  }
+}
+
+# Add associations of private subnets with nat routing tables
+
+resource "aws_route_table_association" "private-routes" {
+  count = length(var.private_subnet_cidrs)
+  route_table_id = aws_route_table.private-subnets[count_index].id
+  subnet_id      = aws_subnet.private-subnets[count_index].id
+  
+}
+
+###############################################
+# == Elastic Load Balancer (Internet-Faced) ==
+###############################################
+
+resource "aws_elb" "web" {
+  name = "web-elb"
+  subnets = [aws_subnet.public_subnets[*].id]
+  security_groups = [aws_security_group.web.id]
+  listener {
+    lb_port = 80
+    lb_protocol = "http"
+    instance_port = 80
+    instance_protocol = "http"
+  }
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 32
+    target              = "HTTP:8000/"
+    interval            = 30
+  }
+  instances = aws_instance.webserver[*].id
+  cross_zone_load_balancing   = true
+
+  tags = {
+    Name = "${var.env}-web-elb"
+    Project = var.project
+  }
+}
+
+###############################################
+# = VPC peering connection: default <-> main ==
+###############################################
+
+# === Create default VPC <-> main VPC connection ===
 
 resource "aws_vpc_peering_connection" "master_peering" {
   vpc_id      = aws_vpc.main.id
-  peer_vpc_id = "vpc-0dd796b7b6beec76f"
+  peer_vpc_id = data.aws_vpc.default.id # default VPC
   auto_accept = true
 } 
-  
+
+# == Add route -> slaves in default VPC route table ==
+
 resource "aws_route" "jenkins_route" {
-  route_table_id            = "rtb-093ac07e6f8726c61"
-  destination_cidr_block    = "10.0.0.0/16"
+  route_table_id            = data.aws_route_table.default # default RT
+  destination_cidr_block    = var.vpc_cidr
   vpc_peering_connection_id = aws_vpc_peering_connection.master_peering.id
   depends_on                = [aws_vpc_peering_connection.master_peering]
 }
 
-#########################################
-# ======== CREATE PUBLIC SUBNET =========
-#########################################
+# == Add route -> jenkins in main VPC public subnet route table ==
 
-resource "aws_subnet" "public-a" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.10.0/24"
-  map_public_ip_on_launch = true
+resource "aws_route" "slave_route" {
+  route_table_id            = aws_route_table.public_rt.id
+  destination_cidr_block    = "172.31.0.0/24"  # JENKINS ADDRESS RANGE
+  vpc_peering_connection_id = aws_vpc_peering_connection.master_peering.id
+  depends_on                = [aws_vpc_peering_connection.master_peering]
+
   tags = {
-    Name = "public-subnet-a"
-    Project = var.PROJECT
-    Environment = var.ENVIRONMENT
+    Name = "${var.env}-peering"
+    Project = var.project
   }
 }
 
-#########################################
-# == Add internet gateway (IGW) to VPC ==
-#########################################
+###############################################
+# ============= AUTOSCALING GROUP =============
+###############################################
 
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.main.id
-  tags = {
-    Name = "main-igw"
-    Project = var.PROJECT
-    Environment = var.ENVIRONMENT
-  }
-}
 
-#########################################
-#  Add routing to IGW for public subnet
-#########################################
+# ======= Create Instance Image for ASG =======
 
-resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.main.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
-  }
-  # added for peering connection
-  route {
-    cidr_block = "172.31.0.0/24"
-    vpc_peering_connection_id = aws_vpc_peering_connection.master_peering.id
-  }
-  
-  tags = {
-    Name = "public_rt"
-    Project = var.PROJECT
-    Environment = var.ENVIRONMENT
-  }
-}
 
-#########################################
-#  Associate public subnet with public-rt
-#########################################
 
-resource "aws_route_table_association" "public_rt_association_a" {
-  subnet_id      = aws_subnet.public-a.id
-  route_table_id = aws_route_table.public_rt.id
-}
+# ======== Create Launge Configuration ========
 
-#########################################
-#  Elastic Load Balancer (Internet-Faced)
-#########################################
 
-resource "aws_elb" "web" {
-  name = "web-elb"
-  subnets = [aws_subnet.public-a.id]
-  security_groups = [aws_security_group.allow-web.id]
-  listener {
-    instance_port = 80
-    instance_protocol = "http"
-    lb_port = 80
-    lb_protocol = "http"
-  }
-  instances = aws_instance.webserver[*].id
-  tags = {
-    Name = "web-elb"
-    Project = var.PROJECT
-    Environment = var.ENVIRONMENT
-  }
-}
+
+# ========= Create Autoscaling Group ==========
