@@ -143,7 +143,7 @@ resource "aws_route_table" "private_subnets" {
     nat_gateway_id = aws_nat_gateway.nat[count.index].id
   }
   tags = {
-    Name = "${var.env}-routing-private-subnet-${format("%02d", count.index + 1)}""
+    Name = "${var.env}-routing-private-subnet-${format("%02d", count.index + 1)}"
     Project = var.project
   }
 }
@@ -157,7 +157,7 @@ resource "aws_subnet" "private_subnets" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name = "${var.env}-private-${format("%02d", count.index + 1)}""
+    Name = "${var.env}-private-${format("%02d", count.index + 1)}"
     Project = var.project
   }
 }
