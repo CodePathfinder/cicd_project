@@ -135,7 +135,7 @@ resource "aws_nat_gateway" "nat" {
 
 # == Add routing tables for private subnets ==
 
-resource "aws_route_table" "private-subnets" {
+resource "aws_route_table" "private_subnets" {
   count = length(var.private_subnet_cidrs)
   vpc_id = aws_vpc.main.id
   route {
@@ -150,7 +150,7 @@ resource "aws_route_table" "private-subnets" {
 
 # =========== Create private subnets ==========
 
-resource "aws_subnet" "private-subnets" {
+resource "aws_subnet" "private_subnets" {
   count = length(var.private_subnet_cidrs)
   vpc_id            = aws_vpc.main.id
   cidr_block        = element(var.private_subnet_cidrs, count.index)
@@ -164,7 +164,7 @@ resource "aws_subnet" "private-subnets" {
 
 # Add associations of private subnets with nat routing tables
 
-resource "aws_route_table_association" "private-routes" {
+resource "aws_route_table_association" "private_routes" {
   count = length(var.private_subnet_cidrs)
   route_table_id = aws_route_table.private-subnets[count_index].id
   subnet_id      = aws_subnet.private-subnets[count_index].id
