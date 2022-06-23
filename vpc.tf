@@ -180,6 +180,10 @@ resource "aws_vpc_peering_connection" "master_peering" {
   vpc_id      = aws_vpc.main.id
   peer_vpc_id = data.aws_vpc.default.id # default VPC
   auto_accept = true
+  tags = {
+    Name = "${var.env}-peering"
+    Project = var.project
+  }
 } 
 
 # == Add route -> slaves in default VPC route table ==
@@ -198,11 +202,6 @@ resource "aws_route" "slave_route" {
   destination_cidr_block    = "172.31.0.0/24"  # JENKINS ADDRESS RANGE
   vpc_peering_connection_id = aws_vpc_peering_connection.master_peering.id
   depends_on                = [aws_vpc_peering_connection.master_peering]
-
-  tags = {
-    Name = "${var.env}-peering"
-    Project = var.project
-  }
 }
 
 /*
