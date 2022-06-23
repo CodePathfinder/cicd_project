@@ -96,7 +96,7 @@ resource "aws_route_table" "public_subnets" {
 
 # = Associate route table with public subnets =
 
-resource "aws_route_table_association" "public_rt_association_a" {
+resource "aws_route_table_association" "public_routes" {
   count          = length(aws_subnet.public_subnets[*].id)
   route_table_id = aws_route_table.public_subnets.id
   subnet_id      = element(aws_subnet.public_subnets[*].id, count.index)
@@ -124,7 +124,7 @@ resource "aws_eip" "nat" {
 resource "aws_nat_gateway" "nat" {
   count = length(var.private_subnet_cidrs)
   connectivity_type = "public"
-  allocation_id     = aws_eip.nat[count_index].id
+  allocation_id     = element(aws_eip.nat[*].id, count.index)
   subnet_id         = element(aws_subnet.public_subnets[*].id, count.index)
 
   tags = {
@@ -166,8 +166,8 @@ resource "aws_subnet" "private_subnets" {
 
 resource "aws_route_table_association" "private_routes" {
   count = length(var.private_subnet_cidrs)
-  route_table_id = aws_route_table.private-subnets[count_index].id
-  subnet_id      = aws_subnet.private-subnets[count_index].id
+  route_table_id = aws_route_table.private_subnets[count_index].id
+  subnet_id      = aws_subnet.private_subnets[count_index].id
   
 }
 
