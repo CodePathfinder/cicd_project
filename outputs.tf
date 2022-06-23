@@ -19,12 +19,11 @@ output "private_subnet_ids" {
 }
 
 # ======================================
-
+/*
 output "elb_address" {
   value = aws_elb.web.dns_name
 }
 
-/*
 output "PrivateIPs" {
   value = aws_instance.webserver[*].private_ip
 }

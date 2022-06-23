@@ -194,7 +194,7 @@ resource "aws_route" "jenkins_route" {
 # == Add route -> jenkins in main VPC public subnet route table ==
 
 resource "aws_route" "slave_route" {
-  route_table_id            = aws_route_table.public_rt.id
+  route_table_id            = aws_route_table.public_subnets.id
   destination_cidr_block    = "172.31.0.0/24"  # JENKINS ADDRESS RANGE
   vpc_peering_connection_id = aws_vpc_peering_connection.master_peering.id
   depends_on                = [aws_vpc_peering_connection.master_peering]
