@@ -1,17 +1,21 @@
 #########################################
-# MODULED TERRAFORMR | VARIABLES (INPUT)
+# ========= PROJECT VARIABLES ===========
 #########################################
 
 variable "project" {
   default = "CICD"
 }
 
-variable "vpc_cidr" {
-  default = "10.0.0.0/16"
-}
-
 variable "env" {
   default = "dev"
+}
+
+#########################################
+# ========= NETWORK VARIABLES ===========
+#########################################
+
+variable "vpc_cidr" {
+  default = "10.0.0.0/16"
 }
 
 variable "public_subnet_cidrs" {
@@ -22,40 +26,36 @@ variable "public_subnet_cidrs" {
 }
 
 variable "private_subnet_cidrs" {
-  default = [
-    "10.0.20.0/24",
-    "10.0.21.0/24"
-  ]
+  default = []
+}
+
+#########################################
+# ========= INSTANCE VARIABLES ==========
+#########################################
+
+variable "key_name" {
+  default = "jenkins-key-frankfurt"
+}
+
+variable "user" {
+  default = "ec2-user"
+}
+
+variable "type" {
+  default = "t2.micro"
 }
 
 # =====================================================
 /*
 #########################################
-# INSTANCE: COUNT | OS | TYPE | KEY-PAIR 
+# ==== AUTO SCALING GROUP | AMIs MAP ====
 #########################################
+
+"10.0.20.0/24",
+"10.0.21.0/24"
 
 variable "COUNT" {
   default = 2
-}
-
-variable "OS" {
-  default = "ubuntu-20"
-}
-
-variable "TYPE" {
-  default = "t2.micro"
-}
-
-variable "USER" {
-  default = "ubuntu"
-}
-
-variable "PUB_KEY" {
-  default = "jenkins-key-frankfurt.pub"
-}
-
-variable "PRIV_KEY" {
-  default = "jenkins-key-frankfurt"
 }
 
 # ----------------------------------------
@@ -69,24 +69,4 @@ variable "AMIS" {
 }
 # ----------------------------------------
 
-#########################################
-# NETWORKING: SSH INGRESS CIDR 
-#########################################
-
-variable "SSH_CIDR" {
-  default = "all_ip"
-}
-
-variable "IP_ADDRESSES" {
-  type = map
-  default = {
-    my_ip       = "176.100.9.0/24"
-    all_ip      = "0.0.0.0/0"
-    jenkins_ip  = "172.31.0.225/32"
-  }
-}
-
-#########################################
-# EXISTING RESOURCES 
-#########################################
 */
