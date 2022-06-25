@@ -51,7 +51,7 @@
 
   handlers: # =============== Handlers ===============
     - name: Restart Apache on Amazon Linux
-      service: name=httpd state restarted
+      service: name=httpd state=restarted
 
     - name: Restart Apache on Ubuntu
-      service: name=apache2 state restarted
+      service: name=apache2 state=restarted
