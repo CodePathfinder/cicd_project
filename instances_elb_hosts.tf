@@ -103,8 +103,8 @@ resource "aws_instance" "webservers" {
     aws_security_group.web.id,
     aws_security_group.ssh.id
   ]
-#  user_data                   = file("user_data.sh")
-#  user_data_replace_on_change = true
+  #  user_data                   = file("user_data.sh")
+  #  user_data_replace_on_change = true
   tags = {
     Name    = "${var.env}-web-${format("%02d", count.index + 1)}"
     Group   = "webservers"
