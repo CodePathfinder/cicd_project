@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    options{
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+    }
+    stages{
+        stage('Git Checkout'){
+            steps{
+                git branch: 'terra-dev', credentialsId: 'jenkins-ssh-to-git', url: 'git@github.com:CodePathfinder/cicd_project.git'
+            }
+        }
+        stage('Check current directory'){
+            steps{
+                sh 'pwd'
+            }
+        }
+        stage('Terraform Format Check'){
+            steps{
+                sh 'terraform fmt'
+            }
+        }
+        stage('Terraform Init'){
+            steps{
+                sh 'terraform init'
+            }
+        }
+        stage('Terraform Apply'){
+            steps{
+                sh 'terraform apply --auto-approve'
+            } 
+        }
+        stage('Terraform Output'){
+            steps{
+                sh 'terraform output'
+            } 
+        }
+        stage('Print workspace tree'){
+            steps{
+                echo "WORKSPACE: ${WORKSPACE}"
+                sh 'tree ${WORKSPACE}' 
+            } 
+        }
+    }
+}

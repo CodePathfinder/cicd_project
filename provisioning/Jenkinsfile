@@ -1,0 +1,50 @@
+pipeline{
+    agent any
+    options{
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+    }
+    stages{
+        stage('Git Checkout Ansible'){
+            steps{
+                deleteDir()  // clean up our workspace 
+                sh 'mkdir -p ansible'
+                dir("ansible")
+                {
+                    git branch: 'ansible',
+                    credentialsId: 'jenkins-ssh-to-git',
+                    url: 'git@github.com:CodePathfinder/cicd_project.git'
+                }
+            }
+        }
+        stage('Git Checkout Website'){
+            steps{
+                sh 'mkdir -p my_website'
+                dir("my_website")
+                {
+                    git branch: 'main',
+                    credentialsId: 'jenkins-ssh-to-git',
+                    url: 'git@github.com:CodePathfinder/tween_agency.git'
+                }
+            }
+        }
+        stage('Lookup on workspace tree'){
+            steps{
+                sh 'tree'
+			}
+        }
+        stage('Copy Inventory File'){
+            steps{
+                sh 'aws s3 cp s3://terraform-state-cicd/dev_hosts/hosts.txt ./ansible/hosts.txt' 
+			}
+        }
+        stage('Execute Ansible: Deploy'){
+            steps{
+                ansiblePlaybook(
+				    playbook: 'ansible/deploy_to_apache.yml',
+				    inventory: 'ansible/hosts.txt',
+				    disableHostKeyChecking: true
+				)
+			}
+        }
+    }
+}

@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+	options{
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+    }
+    stages{
+        stage('Git Checkout'){
+            steps{
+                git branch: 'terra-dev', credentialsId: 'jenkins-ssh-to-git', url: 'git@github.com:CodePathfinder/cicd_project.git'
+            }
+        }
+        stage('Terraform Format Check'){
+            steps{
+                sh 'terraform fmt'
+            }
+        }
+        stage('Terraform Init'){
+            steps{
+                sh 'terraform init'
+            }
+        }
+        stage('Terraform Destroy'){
+            steps{
+                sh 'terraform destroy --auto-approve'
+            } 
+        }
+    }
+}
