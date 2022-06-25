@@ -12,23 +12,24 @@
 #   - Load Balancer URL
 # ===========================================================
 
+#########################################
+# ============== AMI LOOKUP =============
+#########################################
 
-# ================= AMI Lookup ================
-
-data "aws_ami" "ubuntu_latest" {
+# ============ Ubuntu 20.04 =============
+data "aws_ami" "ubuntu" {
   owners      = ["099720109477"]
   most_recent = true
-
   filter {
     name   = "name"
     values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
   }
 }
 
-data "aws_ami" "amazon_linux_latest" {
+# =========== Amazon Linux 2 ============
+data "aws_ami" "amazon_linux" {
   owners      = ["amazon"]
   most_recent = true
-
   filter {
     name   = "name"
     values = ["amzn2-ami-*-hvm-*-x86_64-gp2"]
@@ -95,7 +96,7 @@ resource "aws_security_group" "web" {
 
 resource "aws_instance" "webservers" {
   count         = length(var.public_subnet_cidrs)
-  ami           = data.aws_ami.amazon_linux_latest.id
+  ami           = var.user == "ubuntu" ? data.aws_ami.ubuntu.id : data.aws_ami.amazon_linux.id
   instance_type = var.type
   key_name      = var.key_name
   subnet_id     = element(aws_subnet.public_subnets[*].id, count.index)
@@ -159,24 +160,4 @@ resource "aws_s3_bucket_object" "dev_hosts" {
   acl        = "private"
   content    = local.group_data
   depends_on = [aws_instance.webservers]
-}
-
-##########################################
-# ============== OUTPUTS =================
-##########################################
-
-output "Private_IPs" {
-  value = aws_instance.webservers[*].private_ip
-}
-
-output "Public_IPs" {
-  value = aws_instance.webservers[*].public_ip
-}
-
-output "Hosts" {
-  value = local.group_data
-}
-
-output "Load_Balancer_URL" {
-  value = aws_elb.web.dns_name
 }
