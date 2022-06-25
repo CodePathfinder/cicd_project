@@ -1,0 +1,57 @@
+---
+- name: Install Apache and Upload Webpage
+  hosts: webservers
+  become: True
+
+  vars:
+    source_dir: ../my_website/
+    destination_dir: /var/www/html/
+
+  tasks:
+    - name: Check and Print Linux Version
+      debug: var=ansible_os_family
+
+    - block: # =============== Block for Amazon Linux ===============
+        - name: Install Apache Web Server and Rsync Utility for Amazon Linux
+          yum:
+            name:
+              - httpd
+              - rsync
+            state: latest
+
+        - name: Synchronize Website code with Apache Web Servers
+          synchronize:
+            src: "{{ source_dir }}"
+            dest: "{{ destination_dir }}"
+            delete: yes
+            recursive: yes
+          notify: Restart Apache on Amazon Linux
+
+        - name: Start Web Server and Make It Enable on Boot for Amazon Linux
+          service: name=httpd state=started enabled=yes
+
+      when: ansible_os_family == "RedHat"
+
+    - block: # =============== Block for Ubuntu ===============
+        - name: Istall Apache Web Server for Ubuntu
+          apt: name=apache2 state=latest
+
+        - name: Copy MyHomePage to Servers
+          synchronize:
+            src: "{{ source_dir }}"
+            dest: "{{ destination_dir }}"
+            delete: yes
+            recursive: yes
+          notify: Restart Apache on Ubuntu
+
+        - name: Start Web Server and Make It Enable on Boot for Ubuntu
+          service: name=apache2 state=started enabled=yes
+
+      when: ansible_os_family == "Debian"
+
+  handlers: # =============== Handlers ===============
+    - name: Restart Apache on Amazon Linux
+      service: name=httpd state restarted
+
+    - name: Restart Apache on Ubuntu
+      service: name=apache2 state restarted
