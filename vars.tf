@@ -5,7 +5,6 @@
 variable "project" {
   default = "CICD"
 }
-
 variable "env" {
   default = "dev"
 }
@@ -48,25 +47,9 @@ variable "type" {
 # =====================================================
 /*
 #########################################
-# ==== AUTO SCALING GROUP | AMIs MAP ====
+# ============ OTHER STAFF ==============
 #########################################
 
 "10.0.20.0/24",
 "10.0.21.0/24"
-
-variable "COUNT" {
-  default = 2
-}
-
-# ----------------------------------------
-variable "AMIS" {
-  type = map
-  default = {
-    ubuntu-22     = "ami-015c25ad8763b2f11"
-    ubuntu-20     = "ami-02584c1c9d05efa69"
-    amazon-linux  = "ami-09439f09c55136ecf"
-  }
-}
-# ----------------------------------------
-
 */
