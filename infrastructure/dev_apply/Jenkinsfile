@@ -9,11 +9,6 @@ pipeline {
                 git branch: 'terra-dev', credentialsId: 'jenkins-ssh-to-git', url: 'git@github.com:CodePathfinder/cicd_project.git'
             }
         }
-        stage('Check current directory'){
-            steps{
-                sh 'pwd'
-            }
-        }
         stage('Terraform Format Check'){
             steps{
                 sh 'terraform fmt'
@@ -27,11 +22,6 @@ pipeline {
         stage('Terraform Apply'){
             steps{
                 sh 'terraform apply --auto-approve'
-            } 
-        }
-        stage('Terraform Output'){
-            steps{
-                sh 'terraform output'
             } 
         }
         stage('Print workspace tree'){

@@ -1,6 +1,6 @@
 pipeline {
     agent any
-	options{
+    options{
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
     }
     stages{
@@ -19,9 +19,15 @@ pipeline {
                 sh 'terraform init'
             }
         }
-        stage('Terraform Destroy'){
+        stage('Terraform Apply'){
             steps{
-                sh 'terraform destroy --auto-approve'
+                sh 'terraform apply --auto-approve'
+            } 
+        }
+        stage('Print workspace tree'){
+            steps{
+                echo "WORKSPACE: ${WORKSPACE}"
+                sh 'tree ${WORKSPACE}' 
             } 
         }
     }
