@@ -14,7 +14,7 @@ module "main-vpc" {
 }
 
 module "ec2-elb-sg" {
-  source = "./aws_modules/ec2_elb_hosts"
+  source = "./aws_modules/instances"
   env    = "dev"
   user   = "ubuntu"
 }
@@ -28,7 +28,7 @@ module "main-vpc" {
 }
 
 module "ec2-elb-sg" {
-  source = "./aws_modules/ec2_elb_hosts"
+  source = "./aws_modules/instances"
   env    = "prod"
   user   = "ubuntu"
   type   = "t2.small"
