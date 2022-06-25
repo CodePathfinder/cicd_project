@@ -7,14 +7,14 @@ provider "aws" {
 # ========== dev-environment ===========
 
 module "main-vpc" {
-  source               = "../aws_modules/network"
+  source               = "./aws_modules/network"
   env                  = "dev"
   public_subnet_cidrs  = ["10.0.10.0/24"]
   private_subnet_cidrs = []
 }
 
 module "ec2-elb-sg" {
-  source = "../aws_modules/ec2_elb_hosts"
+  source = "./aws_modules/ec2_elb_hosts"
   env    = "dev"
   user   = "ubuntu"
 }
@@ -22,13 +22,13 @@ module "ec2-elb-sg" {
 # ========== prod-environment ==========
 /*
 module "main-vpc" {
-  source               = "../aws_modules/network"
+  source               = "./aws_modules/network"
   env                  = "prod"
   private_subnet_cidrs = []
 }
 
 module "ec2-elb-sg" {
-  source = "../aws_modules/ec2_elb_hosts"
+  source = "./aws_modules/ec2_elb_hosts"
   env    = "prod"
   user   = "ubuntu"
   type   = "t2.small"
