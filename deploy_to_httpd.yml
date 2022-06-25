@@ -8,9 +8,11 @@
     destination_dir: /var/www/html/
 
   tasks:
-    - name: Install httpd
+    - name: Install httpd and rsync
       yum:
-        name: httpd
+        name:
+          - httpd
+          - rsync
         state: latest
 
     - name: Start and enable httpd
