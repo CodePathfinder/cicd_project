@@ -34,7 +34,7 @@ output "vpc_id" {
 }
 
 output "vpc_cidr_block" {
-  value = module.network.cidr_block
+  value = module.network.vpc_cidr
 }
 
 output "public_subnet_ids" {
