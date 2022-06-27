@@ -12,13 +12,12 @@ module "main-vpc" {
   public_subnet_cidrs  = ["10.0.10.0/24"]
   private_subnet_cidrs = []
 }
-/*
+
 module "ec2-elb-sg" {
   source = "./aws_modules/instances"
   env    = "dev"
   user   = "ubuntu"
 }
-*/
 
 # ============== outputs ==============
 
@@ -29,7 +28,7 @@ output "vpc_cidr_block" {
 output "public_subnet_ids" {
   value = module.main-vpc.public_subnet_ids
 }
-/*
+
 output "hosts" {
   value = module.ec2-elb-sg.hosts
 }

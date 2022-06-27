@@ -91,7 +91,7 @@ resource "aws_security_group" "web" {
     Project = var.project
   }
 }
-
+/*
 #########################################
 #  Create Web Servers in public_subnets
 #########################################
@@ -163,3 +163,4 @@ resource "aws_s3_bucket_object" "dev_hosts" {
   content    = local.group_data
   depends_on = [aws_instance.webservers]
 }
+*/
