@@ -1,20 +1,27 @@
 # ==== Providers configuration: AWS ====
-
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}
 provider "aws" {
   region = "eu-central-1"
 }
 
 # ========== dev-environment ===========
 
-module "main-vpc" {
+module "main_vpc" {
   source               = "./aws_modules/network"
   env                  = "dev"
   public_subnet_cidrs  = ["10.0.10.0/24"]
   private_subnet_cidrs = []
 }
 
-module "ec2-elb-sg" {
+module "ec2_elb" {
   source = "./aws_modules/instances"
+  vpcid  = module.main_vpc.vpc_id
   env    = "dev"
   user   = "ubuntu"
 }
@@ -22,13 +29,14 @@ module "ec2-elb-sg" {
 # ============== outputs ==============
 
 output "vpc_cidr_block" {
-  value = module.main-vpc.vpc_cidr
+  value = module.main-vpc.vpc_id
 }
 
 output "public_subnet_ids" {
   value = module.main-vpc.public_subnet_ids
 }
 
+/*
 output "hosts" {
   value = module.ec2-elb-sg.hosts
 }
@@ -42,7 +50,7 @@ output "load_balancer_url" {
 }
 
 # ==============================
-/*
+
 data "terraform-remote-state" "network" {
   backend = "s3"
   config = {
