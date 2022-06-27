@@ -43,7 +43,6 @@ data "aws_ami" "amazon_linux" {
 # ========= 'ssh' security group ========
 
 resource "aws_security_group" "ssh" {
-  #  vpc_id      = aws_vpc.main.id
   vpc_id      = var.vpcid
   name        = "ssh_sg"
   description = "Allow ssh inbound traffic from Jenkins and MyIP"
@@ -69,7 +68,6 @@ resource "aws_security_group" "ssh" {
 # ========= 'web' security group ========
 
 resource "aws_security_group" "web" {
-  # vpc_id      = aws_vpc.main.id
   vpc_id      = var.vpcid
   name        = "web_sg"
   description = "Allow http inbound traffic from anywhere"
@@ -91,17 +89,17 @@ resource "aws_security_group" "web" {
     Project = var.project
   }
 }
-/*
+
 #########################################
 #  Create Web Servers in public_subnets
 #########################################
 
 resource "aws_instance" "webservers" {
-  count         = length(var.public_subnet_cidrs)
+  count         = length(var.public_ids)
   ami           = var.user == "ubuntu" ? data.aws_ami.ubuntu.id : data.aws_ami.amazon_linux.id
   instance_type = var.type
   key_name      = var.key_name
-  subnet_id     = element(aws_subnet.public_subnets[*].id, count.index)
+  subnet_id     = element(var.public_ids, count.index)
   vpc_security_group_ids = [
     aws_security_group.web.id,
     aws_security_group.ssh.id
@@ -114,7 +112,7 @@ resource "aws_instance" "webservers" {
     Project = var.project
   }
 }
-
+/*
 ###############################################
 # ========== Classic Load Balancer ============
 ###############################################
@@ -145,7 +143,7 @@ resource "aws_elb" "web" {
     Project = var.project
   }
 }
-
+*/
 ##########################################
 #  Save hosts.txt (IP-addresses) remotely
 ##########################################
@@ -163,4 +161,4 @@ resource "aws_s3_bucket_object" "dev_hosts" {
   content    = local.group_data
   depends_on = [aws_instance.webservers]
 }
-*/
+

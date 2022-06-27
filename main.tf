@@ -12,41 +12,45 @@ provider "aws" {
 
 # ========== dev-environment ===========
 
-module "main_vpc" {
+module "network" {
   source               = "./aws_modules/network"
   env                  = "dev"
   public_subnet_cidrs  = ["10.0.10.0/24"]
   private_subnet_cidrs = []
 }
 
-module "ec2_elb" {
-  source = "./aws_modules/instances"
-  vpcid  = module.main_vpc.vpc_id
-  env    = "dev"
-  user   = "ubuntu"
+module "instances" {
+  source     = "./aws_modules/instances"
+  vpcid      = module.network.vpc_id # takes value for output
+  public_ids = module.network.public_subnet_ids
+  env        = "dev"
+  user       = "ubuntu"
 }
 
 # ============== outputs ==============
 
+output "vpc_id" {
+  value = module.network.vpc_id
+}
+
 output "vpc_cidr_block" {
-  value = module.main_vpc.vpc_id
+  value = module.network.cidr_block
 }
 
 output "public_subnet_ids" {
-  value = module.main_vpc.public_subnet_ids
+  value = module.network.public_subnet_ids
 }
 
-/*
 output "hosts" {
-  value = module.ec2-elb-sg.hosts
+  value = module.instances.hosts
 }
 
 output "public_ips" {
-  value = module.ec2-elb-sg.public_ips
+  value = module.instances.public_ips
 }
-
+/*
 output "load_balancer_url" {
-  value = module.ec2-elb-sg.load_balancer_url
+  value = module.instances.load_balancer_url
 }
 
 # ==============================
