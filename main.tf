@@ -29,11 +29,11 @@ module "ec2_elb" {
 # ============== outputs ==============
 
 output "vpc_cidr_block" {
-  value = module.main-vpc.vpc_id
+  value = module.main_vpc.vpc_id
 }
 
 output "public_subnet_ids" {
-  value = module.main-vpc.public_subnet_ids
+  value = module.main_vpc.public_subnet_ids
 }
 
 /*
