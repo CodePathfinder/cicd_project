@@ -12,41 +12,14 @@ module "main-vpc" {
   public_subnet_cidrs  = ["10.0.10.0/24"]
   private_subnet_cidrs = []
 }
-/*
-data "terraform-remote-state" "network" {
-  backend = "s3"
-  config = {
-    bucket = "terraform-state-cicd"
-    key    = "terraform/backend"
-    region = "eu-central-1"
-  }
-}
-
-output "network_details" {
-  value = data.terraform-remote-state.network
-}
 
 module "ec2-elb-sg" {
   source = "./aws_modules/instances"
-
-  env  = "dev"
-  user = "ubuntu"
-}
-
-# ========== prod-environment ==========
-/*
-module "main-vpc" {
-  source               = "./aws_modules/network"
-  env                  = "prod"
-  private_subnet_cidrs = []
-}
-
-module "ec2-elb-sg" {
-  source = "./aws_modules/instances"
-  env    = "prod"
+  vpc_id = module.main-vpc.vpc_id
+  env    = "dev"
   user   = "ubuntu"
-  type   = "t2.small"
 }
+
 
 # ============== outputs ==============
 
@@ -70,4 +43,32 @@ output "load_balancer_url" {
   value = module.ec2-elb-sg.load_balancer_url
 }
 
+# ==============================
+/*
+data "terraform-remote-state" "network" {
+  backend = "s3"
+  config = {
+    bucket = "terraform-state-cicd"
+    key    = "terraform/backend"
+    region = "eu-central-1"
+  }
+}
+
+output "network_details" {
+  value = data.terraform-remote-state.network
+}
+# ========== prod-environment ==========
+/*
+module "main-vpc" {
+  source               = "./aws_modules/network"
+  env                  = "prod"
+  private_subnet_cidrs = []
+}
+
+module "ec2-elb-sg" {
+  source = "./aws_modules/instances"
+  env    = "prod"
+  user   = "ubuntu"
+  type   = "t2.small"
+}
 */
