@@ -1,7 +1,7 @@
 ##########################################
 # ============== OUTPUTS =================
 ##########################################
-
+/*
 output "private_ips" {
   value = aws_instance.webservers[*].private_ip
 }
@@ -17,3 +17,4 @@ output "hosts" {
 output "load_balancer_url" {
   value = aws_elb.web.dns_name
 }
+*/
