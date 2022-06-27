@@ -15,7 +15,6 @@ module "main-vpc" {
 
 module "ec2-elb-sg" {
   source = "./aws_modules/instances"
-  vpc_id = module.main-vpc.vpc_id
   env    = "dev"
   user   = "ubuntu"
 }

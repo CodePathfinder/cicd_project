@@ -43,7 +43,8 @@ data "aws_ami" "amazon_linux" {
 # ========= 'ssh' security group ========
 
 resource "aws_security_group" "ssh" {
-  vpc_id      = aws_vpc.main.id
+  #  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.main-vpc.vpc_id
   name        = "ssh_sg"
   description = "Allow ssh inbound traffic from Jenkins and MyIP"
 
@@ -68,7 +69,8 @@ resource "aws_security_group" "ssh" {
 # ========= 'web' security group ========
 
 resource "aws_security_group" "web" {
-  vpc_id      = aws_vpc.main.id
+  # vpc_id      = aws_vpc.main.id
+  vpc_id      = module.main-vpc.vpc_id
   name        = "web_sg"
   description = "Allow http inbound traffic from anywhere"
 
