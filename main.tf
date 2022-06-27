@@ -13,10 +13,24 @@ module "main-vpc" {
   private_subnet_cidrs = []
 }
 
+data "terraform-remote-state" "network" {
+  backend = "s3"
+  config = {
+    bucket = "terraform-state-cicd"
+    key    = "terraform/backend"
+    region = "eu-central-1"
+  }
+}
+
+output "network_details" {
+  value = data.terraform-remote-state.network
+}
+/*
 module "ec2-elb-sg" {
   source = "./aws_modules/instances"
-  env    = "dev"
-  user   = "ubuntu"
+
+  env  = "dev"
+  user = "ubuntu"
 }
 
 # ========== prod-environment ==========
@@ -33,7 +47,7 @@ module "ec2-elb-sg" {
   user   = "ubuntu"
   type   = "t2.small"
 }
-*/
+
 # ============== outputs ==============
 
 output "vpc_cidr_block" {
@@ -56,3 +70,4 @@ output "load_balancer_url" {
   value = module.ec2-elb-sg.load_balancer_url
 }
 
+*/
