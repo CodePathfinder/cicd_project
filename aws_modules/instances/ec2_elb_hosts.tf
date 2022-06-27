@@ -112,7 +112,7 @@ resource "aws_instance" "webservers" {
     Project = var.project
   }
 }
-/*
+
 ###############################################
 # ========== Classic Load Balancer ============
 ###############################################
@@ -120,7 +120,7 @@ resource "aws_instance" "webservers" {
 resource "aws_elb" "web" {
   name            = "web-elb"
   security_groups = [aws_security_group.web.id]
-  subnets         = aws_subnet.public_subnets[*].id
+  subnets         = var.public_ids
 
   listener {
     lb_port           = 80
@@ -143,7 +143,7 @@ resource "aws_elb" "web" {
     Project = var.project
   }
 }
-*/
+
 ##########################################
 #  Save hosts.txt (IP-addresses) remotely
 ##########################################

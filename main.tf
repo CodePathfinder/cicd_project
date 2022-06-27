@@ -48,11 +48,11 @@ output "hosts" {
 output "public_ips" {
   value = module.instances.public_ips
 }
-/*
+
 output "load_balancer_url" {
   value = module.instances.load_balancer_url
 }
-
+/*
 # ==============================
 
 data "terraform-remote-state" "network" {
@@ -68,7 +68,7 @@ output "network_details" {
   value = data.terraform-remote-state.network
 }
 # ========== prod-environment ==========
-/*
+
 module "main-vpc" {
   source               = "./aws_modules/network"
   env                  = "prod"

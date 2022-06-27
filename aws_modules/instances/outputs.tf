@@ -13,8 +13,8 @@ output "public_ips" {
 output "hosts" {
   value = local.group_data
 }
-/*
+
 output "load_balancer_url" {
   value = aws_elb.web.dns_name
 }
-*/
+
