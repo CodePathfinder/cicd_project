@@ -12,7 +12,7 @@ module "main-vpc" {
   public_subnet_cidrs  = ["10.0.10.0/24"]
   private_subnet_cidrs = []
 }
-
+/*
 data "terraform-remote-state" "network" {
   backend = "s3"
   config = {
@@ -25,7 +25,7 @@ data "terraform-remote-state" "network" {
 output "network_details" {
   value = data.terraform-remote-state.network
 }
-/*
+
 module "ec2-elb-sg" {
   source = "./aws_modules/instances"
 
