@@ -118,7 +118,7 @@ resource "aws_instance" "webservers" {
 ###############################################
 
 resource "aws_elb" "web" {
-  name            = "web-elb"
+  name            = "${var.env}-web-elb"
   security_groups = [aws_security_group.web.id]
   subnets         = var.public_ids
 
