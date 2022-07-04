@@ -154,7 +154,7 @@ locals {
   group_data = "[${local.group_name}]\n${local.group_ips}"
 }
 
-resource "aws_s3_bucket_object" "dev_hosts" {
+resource "aws_s3_bucket_object" "hosts" {
   bucket     = "terraform-state-cicd"
   key        = "${var.env}_hosts/hosts.txt"
   acl        = "private"
