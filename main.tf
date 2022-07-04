@@ -26,6 +26,7 @@ module "instances" {
   public_ids = module.network.public_subnet_ids
   env        = "dev"
   user       = "ubuntu"
+  type       = "t2.micro"
 }
 
 # ========== prod-environment ===========
@@ -43,6 +44,7 @@ module "instances_prod" {
   public_ids = module.network_prod.public_subnet_ids
   env        = "prod"
   user       = "ec2-user"
+  type       = "t2.small"
 }
 
 
