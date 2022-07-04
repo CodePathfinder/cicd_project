@@ -27,7 +27,21 @@ module "instances" {
   user       = "ubuntu"
 }
 
-# ============== outputs ==============
+# ========== prod-environment ===========
+module "network_prod" {
+  source               = "./aws_modules/network"
+  env                  = "prod"
+  private_subnet_cidrs = ["10.0.20.0/24", "10.0.21.0/24"]
+}
+
+module "instances_prod" {
+  source     = "./aws_modules/instances"
+  vpcid      = module.network_prod.vpc_id # takes value for output
+  public_ids = module.network_prod.public_subnet_ids
+  env        = "prod"
+  user       = "ec2-user"
+}
+# ============== dev-outputs ==============
 
 output "vpc_id" {
   value = module.network.vpc_id
@@ -51,6 +65,32 @@ output "public_ips" {
 
 output "load_balancer_url" {
   value = module.instances.load_balancer_url
+}
+
+# ============== prod-outputs ==============
+
+output "vpc_id_prod" {
+  value = module.network_prod.vpc_id
+}
+
+output "vpc_cidr_block_prod" {
+  value = module.network_prod.vpc_cidr
+}
+
+output "public_subnet_ids_prod" {
+  value = module.network_prod.public_subnet_ids
+}
+
+output "hosts_prod" {
+  value = module.instances_prod.hosts
+}
+
+output "public_ips_prod" {
+  value = module.instances_prod.public_ips
+}
+
+output "load_balancer_url_prod" {
+  value = module.instances_prod.load_balancer_url
 }
 /*
 # ==============================

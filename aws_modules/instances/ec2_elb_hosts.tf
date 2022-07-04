@@ -156,7 +156,7 @@ locals {
 
 resource "aws_s3_bucket_object" "dev_hosts" {
   bucket     = "terraform-state-cicd"
-  key        = "dev_hosts/hosts.txt"
+  key        = "${var.env}_hosts/hosts.txt"
   acl        = "private"
   content    = local.group_data
   depends_on = [aws_instance.webservers]
