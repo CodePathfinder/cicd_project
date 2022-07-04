@@ -10,6 +10,7 @@ provider "aws" {
   region = "eu-central-1"
 }
 
+
 # ========== dev-environment ===========
 
 module "network" {
@@ -21,7 +22,7 @@ module "network" {
 
 module "instances" {
   source     = "./aws_modules/instances"
-  vpcid      = module.network.vpc_id # takes value for output
+  vpcid      = module.network.vpc_id
   public_ids = module.network.public_subnet_ids
   env        = "dev"
   user       = "ubuntu"
@@ -38,11 +39,13 @@ module "network_prod" {
 
 module "instances_prod" {
   source     = "./aws_modules/instances"
-  vpcid      = module.network_prod.vpc_id # takes value for output
+  vpcid      = module.network_prod.vpc_id
   public_ids = module.network_prod.public_subnet_ids
   env        = "prod"
   user       = "ec2-user"
 }
+
+
 # ============== dev-outputs ==============
 
 output "vpc_id" {
