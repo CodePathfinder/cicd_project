@@ -150,7 +150,9 @@ resource "aws_elb" "web" {
 
 locals {
   group_name = aws_instance.webservers[0].tags.Group
-  group_ips  = join("\n", [for a in aws_instance.webservers[*].private_ip : "${a} ansible_user=${var.user}"])
+  group_ips = join("\n", [
+    for a in aws_instance.webservers[*].private_ip : "${a} ansible_user=${var.user}"
+  ])
   group_data = "[${local.group_name}]\n${local.group_ips}"
 }
 
