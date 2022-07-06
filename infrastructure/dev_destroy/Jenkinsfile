@@ -6,12 +6,7 @@ pipeline {
     stages{
         stage('Git Checkout'){
             steps{
-                git branch: 'terra-dev', credentialsId: 'jenkins-ssh-to-git', url: 'git@github.com:CodePathfinder/cicd_project.git'
-            }
-        }
-        stage('Terraform Format Check'){
-            steps{
-                sh 'terraform fmt'
+                git branch: 'infrastructure', credentialsId: 'jenkins-ssh-to-git', url: 'git@github.com:CodePathfinder/cicd_project.git'
             }
         }
         stage('Terraform Init'){
@@ -22,12 +17,6 @@ pipeline {
         stage('Terraform Apply'){
             steps{
                 sh 'terraform apply --auto-approve'
-            } 
-        }
-        stage('Print workspace tree'){
-            steps{
-                echo "WORKSPACE: ${WORKSPACE}"
-                sh 'tree ${WORKSPACE}' 
             } 
         }
     }

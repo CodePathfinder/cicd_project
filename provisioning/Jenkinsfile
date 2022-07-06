@@ -27,14 +27,15 @@ pipeline{
                 }
             }
         }
-        stage('Lookup on workspace tree'){
-            steps{
-                sh 'tree'
-			}
-        }
         stage('Copy Inventory File'){
             steps{
                 sh 'aws s3 cp s3://terraform-state-cicd/dev_hosts/hosts.txt ./ansible/hosts.txt' 
+			}
+        }
+        stage('Lookup on workspace tree'){
+            steps{
+                echo "WORKSPACE: ${WORKSPACE}"
+                sh 'tree ${WORKSPACE}' 
 			}
         }
         stage('Execute Ansible: Deploy'){
