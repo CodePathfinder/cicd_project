@@ -23,7 +23,7 @@ pipeline{
                 {
                     git branch: 'main',
                     credentialsId: 'jenkins-ssh-to-git',
-                    url: 'git@github.com:CodePathfinder/tween_agency.git'
+                    url: 'git@github.com:CodePathfinder/antique_cafe.git'
                 }
             }
         }
@@ -41,7 +41,7 @@ pipeline{
         stage('Execute Ansible: Deploy'){
             steps{
                 ansiblePlaybook(
-				    playbook: 'ansible/deploy_to_apache.yml',
+				    playbook: 'ansible/deploy_to_web_apache.yml',
 				    inventory: 'ansible/hosts.txt',
 				    disableHostKeyChecking: true
 				)
