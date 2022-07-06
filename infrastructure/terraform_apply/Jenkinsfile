@@ -16,7 +16,7 @@ pipeline {
         }
         stage('Terraform Format Check'){
             steps{
-                sh 'terraform validatefmt'
+                sh 'terraform validate'
             }
         }
         stage('Terraform Apply'){
