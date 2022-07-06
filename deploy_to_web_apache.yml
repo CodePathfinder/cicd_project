@@ -19,7 +19,7 @@
               - rsync
             state: latest
 
-        - name: Synchronize Website code with Apache Web Servers
+        - name: Synchronize Website code with new commit
           synchronize:
             src: "{{ source_dir }}"
             dest: "{{ destination_dir }}"
@@ -36,7 +36,7 @@
         - name: Istall Apache Web Server for Ubuntu
           apt: name=apache2 state=latest
 
-        - name: Copy MyHomePage to Servers
+        - name: Synchronize Website code with new commit
           synchronize:
             src: "{{ source_dir }}"
             dest: "{{ destination_dir }}"
