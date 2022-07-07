@@ -29,7 +29,8 @@ pipeline{
         }
         stage('Copy Inventory File'){
             steps{
-                sh 'aws s3 cp s3://terraform-state-cicd/dev_hosts/hosts.txt ./ansible/hosts.txt' 
+                sh 'aws s3 cp s3://terraform-state-cicd/hosts/*hosts.txt ./ansible/'
+                sh 'cat *hosts.txt > hosts.txt'
 			}
         }
         stage('Lookup on workspace tree'){
