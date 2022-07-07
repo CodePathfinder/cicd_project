@@ -14,7 +14,7 @@ pipeline {
                 sh 'terraform init'
             }
         }
-        stage('Terraform Format Check'){
+        stage('Terraform Validate'){
             steps{
                 sh 'terraform validate'
             }
