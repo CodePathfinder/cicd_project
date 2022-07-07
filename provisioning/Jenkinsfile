@@ -32,6 +32,7 @@ pipeline{
                 sh 'aws s3 ls s3://terraform-state-cicd/hosts/'
                 sh 'aws s3 cp s3://terraform-state-cicd/hosts/ ./ansible/ --recursive'
                 sh 'cat ./ansible/*.txt > ./ansible/hosts.txt'
+                sh 'cat ./ansible/hosts.txt'
 			}
         }
         stage('Lookup on workspace tree'){
