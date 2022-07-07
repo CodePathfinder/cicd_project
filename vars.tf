@@ -43,3 +43,7 @@ variable "user" {
 variable "type" {
   default = "t2.micro"
 }
+
+variable "multiplier" {
+  default = 2
+}

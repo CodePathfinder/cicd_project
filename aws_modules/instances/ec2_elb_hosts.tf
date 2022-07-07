@@ -95,7 +95,7 @@ resource "aws_security_group" "web" {
 #########################################
 
 resource "aws_instance" "webservers" {
-  count         = length(var.public_ids)
+  count         = var.env == "dev" ? length(var.public_ids) * var.multiplier : length(var.public_ids)
   ami           = var.user == "ubuntu" ? data.aws_ami.ubuntu.id : data.aws_ami.amazon_linux.id
   instance_type = var.type
   key_name      = var.key_name
