@@ -4,7 +4,7 @@
 #   - Security Groups for Web Server
 #   - Instances in Public Subnets (1 per subnet)
 #   - Classic Load Balancer for Public Subnets/Instances
-#   - Collect Private IPs -> hosts.txt in S3 bucket
+#   - Collect Private IPs -> hosts/${var.env}_hosts.txt in S3 bucket
 # Outputs:
 #   - Private_IPs
 #   - Public_IPs
@@ -158,7 +158,7 @@ locals {
 
 resource "aws_s3_bucket_object" "hosts" {
   bucket     = "terraform-state-cicd"
-  key        = "${var.env}_hosts/hosts.txt"
+  key        = "hosts/${var.env}_hosts.txt"
   acl        = "private"
   content    = local.group_data
   depends_on = [aws_instance.webservers]

@@ -62,7 +62,7 @@ output "public_subnet_ids" {
   value = module.network.public_subnet_ids
 }
 
-output "hosts" {
+output "hosts_dev" {
   value = module.instances.hosts
 }
 
