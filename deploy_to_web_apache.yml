@@ -1,6 +1,6 @@
 ---
 - name: Install Apache and Upload Webpage
-  hosts: webservers
+  hosts: all
   become: True
 
   vars:
