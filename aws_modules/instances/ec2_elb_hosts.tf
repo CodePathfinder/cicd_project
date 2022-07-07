@@ -153,7 +153,8 @@ locals {
   group_ips = join("\n", [
     for a in aws_instance.webservers[*].private_ip : "${a} ansible_user=${var.user}"
   ])
-  group_data = "[${local.group_name}]\n${local.group_ips}\n"
+  # group_data = "[${local.group_name}]\n${local.group_ips}\n"
+  group_data = "[${var.env}]\n${local.group_ips}\n"
 }
 
 resource "aws_s3_bucket_object" "hosts" {
