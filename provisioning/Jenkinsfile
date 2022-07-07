@@ -30,7 +30,7 @@ pipeline{
         stage('Copy Inventory File'){
             steps{
                 sh 'aws s3 ls s3://terraform-state-cicd/hosts/'
-                sh 'aws s3 cp s3://terraform-state-cicd/hosts/* ./ansible/'
+                sh 'aws s3 cp s3://terraform-state-cicd/hosts/ ./ansible/'
                 sh 'cat *_hosts.txt > hosts.txt'
 			}
         }
