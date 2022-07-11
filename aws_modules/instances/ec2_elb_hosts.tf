@@ -162,4 +162,3 @@ resource "aws_s3_bucket_object" "hosts" {
   content    = local.group_data
   depends_on = [aws_instance.webservers]
 }
-
